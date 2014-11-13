@@ -53,11 +53,12 @@ static jint dpl_cameraOpenWithPackage(JNIEnv *e, jobject o, jint cameraId, jstri
     jint status = IMS_API_ACCESS_ERROR;
     if (e && ims_cam_apis && ims_cam_apis->cameraOpenWithPackage && cameraId >= 0) {
 
-        const char16_t* buffer = e->GetStringChars(packageName, NULL);
+        const char16_t* buffer =
+		reinterpret_cast<const char16_t*>(e->GetStringChars(packageName, NULL));
         if (buffer != NULL) {
             const jsize bufferLength = e->GetStringLength(packageName);
             android::String16 pn(buffer, bufferLength);
-            e->ReleaseStringChars(packageName, buffer);
+            e->ReleaseStringChars(packageName, reinterpret_cast<const jchar*>(buffer));
 
             status = ims_cam_apis->cameraOpenWithPackage(cameraId, &pn);
         } else {
